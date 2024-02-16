@@ -16,8 +16,8 @@ class ProductsWomenComponent extends StatefulWidget {
 class _ProductScreenState extends State<ProductsWomenComponent> {
   List<Product> _productsJewelery = [];
   List<Product> _productsWomensClothing = [];
-  final List<Product> _allProducts = []; // Lista de todos los productos
-  List<Product> _filteredProducts = []; // Lista de productos filtrados
+  final List<Product> _allProducts = [];
+  List<Product> _filteredProducts = [];
 
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
@@ -28,17 +28,14 @@ class _ProductScreenState extends State<ProductsWomenComponent> {
     fetchProducts('jewelery').then((products) {
       setState(() {
         _productsJewelery = products;
-        _allProducts.addAll(
-            products); // Agrega los productos de la categoría de joyería a la lista de todos los productos
+        _allProducts.addAll(products);
       });
     });
     fetchProducts("women's clothing").then((products) {
       setState(() {
         _productsWomensClothing = products;
-        _allProducts.addAll(
-            products); // Agrega los productos de la categoría de ropa de mujer a la lista de todos los productos
-        _filteredProducts =
-            _allProducts; // Inicializa la lista de productos filtrados con todos los productos
+        _allProducts.addAll(products);
+        _filteredProducts = _allProducts;
       });
     });
   }
@@ -93,7 +90,6 @@ class _ProductScreenState extends State<ProductsWomenComponent> {
             CustomImageWidget(
               imageUrl: 'assets/images/modelMujer.png',
               description: 'name_user',
-              icon: Icons.accessible_forward_rounded,
               onPressedHome: _scrollToTop,
               onPressedShop: _scrollToBottom,
               imagenUrlFrase: 'assets/images/Letras/MIRTOMUJER.png',

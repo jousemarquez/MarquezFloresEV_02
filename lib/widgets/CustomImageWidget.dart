@@ -5,7 +5,7 @@ import 'dart:convert';
 class CustomImageWidget extends StatefulWidget {
   final String imageUrl;
   final String description;
-  final IconData icon;
+
   final VoidCallback onPressedHome;
   final VoidCallback onPressedShop;
   final String imagenUrlFrase;
@@ -14,7 +14,6 @@ class CustomImageWidget extends StatefulWidget {
       {super.key,
       required this.imageUrl,
       required this.description,
-      required this.icon,
       required this.onPressedHome,
       required this.onPressedShop,
       required this.imagenUrlFrase});
@@ -85,11 +84,6 @@ class _CustomImageWidgetState extends State<CustomImageWidget> {
                   color: Colors.white,
                   fontSize: 20,
                 ),
-              ),
-              Icon(
-                widget.icon,
-                color: Colors.white,
-                size: 30,
               ),
               CircleAvatar(
                 backgroundImage: AssetImage('assets/images/avatar.png'),

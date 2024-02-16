@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:clothing_shop/pages/product_details_page.dart';
 import 'package:clothing_shop/widgets/CustomImageWidget.dart';
 import 'package:clothing_shop/widgets/ProductCard.dart';
 import 'package:http/http.dart' as http;
@@ -19,8 +20,8 @@ class _ProductScreenState extends State<ProductsManComponent> {
   List<Product> _filteredProducts = [];
 
   final _searchController = TextEditingController();
-
   final _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -86,7 +87,6 @@ class _ProductScreenState extends State<ProductsManComponent> {
             CustomImageWidget(
               imageUrl: 'assets/images/modelHombre.png',
               description: 'name_user',
-              icon: Icons.accessible_forward_rounded,
               onPressedHome: _scrollToTop,
               onPressedShop: _scrollToBottom,
               imagenUrlFrase: 'assets/images/Letras/MIRTOHOMBRE.png',
@@ -141,9 +141,7 @@ class _ProductScreenState extends State<ProductsManComponent> {
   }
 
   Widget _buildProductGrid(List<Product> products) {
-    //Limita la cantidad de productos a mostrar a 8
     final limitedProducts = products.take(8).toList();
-
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -151,15 +149,29 @@ class _ProductScreenState extends State<ProductsManComponent> {
         mainAxisSpacing: 10.0,
       ),
       shrinkWrap: true,
-      physics:
-          NeverScrollableScrollPhysics(), // Deshabilita el desplazamiento del GridView
+      physics: NeverScrollableScrollPhysics(),
       itemCount: limitedProducts.length,
       itemBuilder: (BuildContext context, int index) {
         final product = products[index];
-        return ProductCard(
-          image: product.image,
-          title: product.title,
-          price: product.price.toStringAsFixed(2),
+        //   return ProductCard(
+        //     image: product.image,
+        //     title: product.title,
+        //     price: product.price.toStringAsFixed(2),
+        //   );
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailScreen(product: product),
+              ),
+            );
+          },
+          child: ProductCard(
+            image: product.image,
+            title: product.title,
+            price: product.price.toStringAsFixed(2),
+          ),
         );
       },
     );
