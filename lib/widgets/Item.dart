@@ -1,17 +1,17 @@
 class User {
   final String username;
   final String password;
-  final String imagen_user;
+  final String userImage;
 
   User(
       {required this.username,
       required this.password,
-      required this.imagen_user});
+      required this.userImage});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
         username: json['username'],
         password: json['password'],
-        imagen_user: json['imagen_user']);
+        userImage: json['userImage']);
   }
 }

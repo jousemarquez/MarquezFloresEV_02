@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:clothing_shop/pages/botton_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -17,14 +17,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _keepLoggedIn = false;
+  String _errorMessage = '';
 
-  // Método para obtener la ruta local de almacenamiento
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
-  // Método para cargar y decodificar el JSON de usuarios
   Future<List<Map<String, dynamic>>> _fetchUsers() async {
     final String response = await rootBundle.loadString('assets/users.json');
     List<dynamic> usersData = jsonDecode(response);
@@ -38,8 +37,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (account != null) {
         print('Google Sign-In successful! User: ${account.displayName}');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BotonPages()));
+        _navigateToBotonPages();
       } else {
         print('Google Sign-In cancelled.');
       }
@@ -48,7 +46,15 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Método para validar el inicio de sesión
+  void _navigateToBotonPages() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BotonPages(),
+      ),
+    );
+  }
+
   Future<void> _validateLogin() async {
     List<Map<String, dynamic>> users = await _fetchUsers();
     String enteredUsername = _userController.text.trim();
@@ -63,16 +69,15 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
 
-    setState(() {
-      _keepLoggedIn = !isValidUser;
-    });
-
     if (isValidUser) {
       print('Login successful');
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BotonPages()));
+      _navigateToBotonPages();
     } else {
       print('Login failed');
+      setState(() {
+        _keepLoggedIn = false;
+        _errorMessage = 'Wrong password. Please, try again.';
+      });
     }
   }
 
@@ -83,69 +88,124 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/flutter-logo.png',
-                      width: 245,
-                      height: 137,
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/clothing_store_logo.png',
+                        width: 245,
+                        height: 137,
+                      ),
+                    ],
+                  ),
                 ),
-                ElevatedButton.icon(
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton.icon(
                     onPressed: _loginWithGoogle,
-                    icon: Icon(Icons.login),
-                    label: Text('Login with Google')),
-                // Login Form
+                    icon: Image.asset(
+                      'assets/images/logo_google.png',
+                      height: 32,
+                    ),
+                    label: Text('Login with Google'),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        TextFormField(
-                          controller: _userController,
-                          decoration: InputDecoration(labelText: 'User'),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your username';
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: TextFormField(
+                            controller: _userController,
+                            decoration: InputDecoration(labelText: 'User'),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your username';
+                              }
+                              return null;
+                            },
+                          ),
                         ),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(labelText: 'Password'),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: TextFormField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(labelText: 'Password'),
+                            obscureText: true,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
+                          ),
                         ),
-                        Row(
-                          children: <Widget>[
-                            Checkbox(
-                              value: _keepLoggedIn,
-                              onChanged: (value) {
-                                setState(() {
-                                  _keepLoggedIn = value!;
-                                });
-                              },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: _keepLoggedIn,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _keepLoggedIn = value!;
+                                  });
+                                },
+                              ),
+                              Text('Keep me logged in'),
+                              SizedBox(width: 8),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '#');
+                                },
+                                child: Text(
+                                  'Forgot password',
+                                  style: TextStyle(
+                                    color:
+                                        const Color.fromARGB(255, 81, 81, 81),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_errorMessage.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              _errorMessage,
+                              style: TextStyle(color: Colors.red),
                             ),
-                            Text('Keep me logged in'),
-                          ],
-                        ),
+                          ),
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _validateLogin();
                             }
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF39810D),
+                            minimumSize: Size(345, 64),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0),
+                            ),
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                           child: Text('Log in'),
                         ),
                       ],

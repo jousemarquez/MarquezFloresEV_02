@@ -105,8 +105,9 @@ class _ProductScreenState extends State<ProductsWomenComponent> {
                   Expanded(
                     flex: 1,
                     child: Image.asset(
-                      'assets/images/flutter-logo.png',
-                      fit: BoxFit.cover,
+                      'assets/images/clothing_store_logo.png',
+                      width: 245,
+                      height: 137,
                     ),
                   ),
                   SizedBox(width: 8.0),
