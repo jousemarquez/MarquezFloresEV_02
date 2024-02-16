@@ -33,11 +33,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loginWithGoogle() async {
     try {
-      GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
       GoogleSignInAccount? account = await googleSignIn.signIn();
 
       if (account != null) {
         print('Google Sign-In successful! User: ${account.displayName}');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BotonPages()));
       } else {
         print('Google Sign-In cancelled.');
       }
